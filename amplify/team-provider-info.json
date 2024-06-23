@@ -1,0 +1,50 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-0211amplifyclone-dev-d5000-authRole",
+      "UnauthRoleArn": "arn:aws:iam::673158218077:role/amplify-0211amplifyclone-dev-d5000-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::673158218077:role/amplify-0211amplifyclone-dev-d5000-authRole",
+      "Region": "ap-northeast-1",
+      "DeploymentBucketName": "amplify-0211amplifyclone-dev-d5000-deployment",
+      "UnauthRoleName": "amplify-0211amplifyclone-dev-d5000-unauthRole",
+      "StackName": "amplify-0211amplifyclone-dev-d5000",
+      "StackId": "arn:aws:cloudformation:ap-northeast-1:673158218077:stack/amplify-0211amplifyclone-dev-d5000/dc04cee0-2734-11ef-8864-0697c514b5e3",
+      "AmplifyAppId": "d34tpunp1h7r8g",
+      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-0211amplifyclone-dev-d5000-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
+    },
+    "categories": {
+      "hosting": {
+        "S3AndCloudFront": {}
+      },
+      "function": {
+        "0211amplifyclone9f91ff9a": {
+          "deploymentBucketName": "amplify-0211amplifyclone-dev-d5000-deployment",
+          "s3Key": "amplify-builds/0211amplifyclone9f91ff9a-4f6c56456e646879424c-build.zip"
+        },
+        "0211amplify": {
+          "deploymentBucketName": "amplify-0211amplifyclone-dev-d5000-deployment",
+          "s3Key": "amplify-builds/0211amplify-71524e3456376b684173-build.zip"
+        },
+        "amplifysamplepython": {
+          "deploymentBucketName": "amplify-0211amplifyclone-dev-d5000-deployment",
+          "s3Key": "amplify-builds/amplifysamplepython-45583350744d547a7438-build.zip"
+        },
+        "amplifysamplepythonv2": {
+          "deploymentBucketName": "amplify-0211amplifyclone-dev-d5000-deployment",
+          "s3Key": "amplify-builds/amplifysamplepythonv2-6e48546d687168486c41-build.zip"
+        }
+      },
+      "auth": {
+        "0211amplifyclone": {}
+      },
+      "api": {
+        "apiddfc4c6e": {},
+        "amplifysamplepython": {},
+        "amplifysamplepythonv2": {}
+      },
+      "storage": {
+        "amplifyclone": {}
+      }
+    }
+  }
+}

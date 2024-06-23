@@ -1,0 +1,17 @@
+{
+  "projectName": "0211amplifyclone",
+  "version": "3.1",
+  "frontend": "javascript",
+  "javascript": {
+    "framework": "react",
+    "config": {
+      "SourceDir": "src",
+      "DistributionDir": "out",
+      "BuildCommand": "npm.cmd run build",
+      "StartCommand": "npm.cmd run start"
+    }
+  },
+  "providers": [
+    "awscloudformation"
+  ]
+}

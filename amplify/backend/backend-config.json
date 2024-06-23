@@ -1,0 +1,182 @@
+{
+  "api": {
+    "amplifysamplepython": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "amplifysamplepython"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "amplifysamplepythonv2": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "amplifysamplepythonv2"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "apiddfc4c6e": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "0211amplifyclone9f91ff9a"
+        },
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "0211amplify"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    }
+  },
+  "auth": {
+    "0211amplifyclone": {
+      "dependsOn": [],
+      "frontendAuthConfig": {
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyCharacters": [],
+          "passwordPolicyMinLength": 8
+        },
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito",
+      "serviceType": "managed"
+    }
+  },
+  "function": {
+    "0211amplify": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "0211amplifyclone9f91ff9a": {
+      "build": true,
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "amplifysamplepython": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "amplifysamplepythonv2": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "hosting": {
+    "S3AndCloudFront": {
+      "providerPlugin": "awscloudformation",
+      "service": "S3AndCloudFront"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_0211amplify_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "0211amplify"
+        }
+      ]
+    },
+    "AMPLIFY_function_0211amplify_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "0211amplify"
+        }
+      ]
+    },
+    "AMPLIFY_function_0211amplifyclone9f91ff9a_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "0211amplifyclone9f91ff9a"
+        }
+      ]
+    },
+    "AMPLIFY_function_0211amplifyclone9f91ff9a_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "0211amplifyclone9f91ff9a"
+        }
+      ]
+    },
+    "AMPLIFY_function_amplifysamplepython_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "amplifysamplepython"
+        }
+      ]
+    },
+    "AMPLIFY_function_amplifysamplepython_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "amplifysamplepython"
+        }
+      ]
+    },
+    "AMPLIFY_function_amplifysamplepythonv2_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "amplifysamplepythonv2"
+        }
+      ]
+    },
+    "AMPLIFY_function_amplifysamplepythonv2_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "amplifysamplepythonv2"
+        }
+      ]
+    }
+  },
+  "storage": {
+    "amplifyclone": {
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "S3"
+    }
+  }
+}
