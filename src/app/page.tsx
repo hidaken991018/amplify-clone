@@ -1,113 +1,174 @@
-import Image from "next/image";
+'use client';
+import { Authenticator, TextField } from '@aws-amplify/ui-react';
+import { Hub } from 'aws-amplify/utils';
+import '@aws-amplify/ui-react/styles.css';
+import { useState } from 'react';
+import { AppBar, Toolbar, Typography, Button, Container, Grid, Card, CardContent, CardMedia, Box } from '@mui/material';
 
-export default function Home() {
+import { Amplify } from 'aws-amplify';
+import config from '@/amplifyconfiguration.json';
+Amplify.configure(config);
+import { get, post } from 'aws-amplify/api';
+import useSWR, { Fetcher } from 'swr';
+import { AuthUser } from 'aws-amplify/auth';
+import { list, uploadData } from 'aws-amplify/storage';
+
+type Post = {
+  id: string;
+  username: string;
+  imageUrl: string;
+  caption: string;
+  timestamp: string;
+};
+
+
+const fetchPosts = async (): Promise<Post[] | any> => {
+  try {
+    const data = get({
+      apiName: 'apiddfc4c6e',
+      path: '/posts'
+    });
+    const { body } = await data.response;
+    const response = await body.json();
+    return response;
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    return []
+  }
+};
+
+
+export default function HomePage() {
+
+  const { data: posts, error, mutate } = useSWR<Post[], Error>('/posts', fetchPosts);
+  const [file, setFile] = useState<File | null>(null);
+  const [caption, setCaption] = useState<string>('');
+
+  Hub.listen('auth', ({ payload }) => {
+    switch (payload.event) {
+      case 'signedIn':
+        mutate(posts)
+        break;
+    }
+  });
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setFile(event.target.files[0]);
+    }
+  };
+
+  const handleUpload = async (user: AuthUser | undefined) => {
+    console.log("handleUpload")
+    if (file) {
+      const filename = `${Date.now()}_${file.name}`;
+      console.log("file")
+      try {
+        console.log("uploadData")
+        const result = await uploadData({
+          path: "album/2024/1.jpg",
+          // Alternatively, path: ({identityId}) => `album/${identityId}/1.jpg`
+          data: file,
+          // options: {
+          //   onProgress: ({ transferredBytes, totalBytes }) => {
+          //     if (totalBytes) {
+          //       console.log(
+          //         `Upload progress ${Math.round(
+          //           (transferredBytes / totalBytes) * 100
+          //         )} %`
+          //       );
+          //     }
+          //   },
+          // },
+        }).result;
+
+        let image;
+        try {
+          image = await list({
+            path: "album/2024/1.jpg",
+            // Alternatively, path: ({identityId}) => `album/{identityId}/photos/`
+          });
+        } catch (error) {
+          console.log(error);
+        }
+
+        const newPost = {
+          id: `${Date.now()}`,
+          username: user?.username,
+          image: "",
+          caption,
+          timestamp: new Date().toISOString(),
+        };
+        await post({
+          apiName: 'apiddfc4c6e',
+          path: '/posts'
+        });
+        alert('File uploaded and post created successfully!');
+        setFile(null);
+        setCaption('');
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
+    };
+  }
+
+  if (error) return <div>Failed to load</div>;
+  if (!posts) return <div>読み込み中...</div>;
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <Authenticator>
+      {({ signOut, user }) => (
+        <div>
+          <AppBar position="static">
+            <Toolbar>
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                Welcome {user?.username}
+              </Typography>
+              <Button color="inherit" onClick={signOut}>Sign out</Button>
+            </Toolbar>
+          </AppBar>
+          <Container sx={{ mt: 4 }}>
+            <Box mb={4}>
+              <Typography variant="h6">Upload a new photo</Typography>
+              <input type="file" onChange={handleFileChange} />
+              <TextField
+                label="Caption"
+                value={caption}
+                onChange={(e) => setCaption(e.target.value)}
+                margin="normal"
+              />
+              <Button variant="contained" color="primary" onClick={() => handleUpload(user)}>
+                Upload
+              </Button>
+            </Box>
+            <Grid container spacing={4}>
+              {posts.map((post: Post) => (
+                <Grid item key={post.id} xs={12} sm={6} md={4}>
+                  <Card>
+                    <CardMedia
+                      component="img"
+                      height="140"
+                      image={post.imageUrl}
+                      alt={post.caption}
+                    />
+                    <CardContent>
+                      <Typography gutterBottom variant="h5" component="div">
+                        {post.username}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {post.caption}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {new Date(post.timestamp).toLocaleString()}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          </Container>
         </div>
-      </div>
-
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+      )}
+    </Authenticator>
   );
 }
