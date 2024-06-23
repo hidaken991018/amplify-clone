@@ -1,0 +1,46 @@
+{
+  "aws_project_region": "ap-northeast-1",
+  "aws_content_delivery_bucket": "0211amplifyclone-20240610233201-hostingbucket-dev",
+  "aws_content_delivery_bucket_region": "ap-northeast-1",
+  "aws_content_delivery_url": "https://d3cehidejslpjg.cloudfront.net",
+  "aws_cognito_identity_pool_id": "ap-northeast-1:eda68ff5-d177-4999-99b5-651ac47b24cc",
+  "aws_cognito_region": "ap-northeast-1",
+  "aws_user_pools_id": "ap-northeast-1_813bNJDv4",
+  "aws_user_pools_web_client_id": "4lctm218cl35j4sptfh4k1bb77",
+  "oauth": {},
+  "aws_cognito_username_attributes": [],
+  "aws_cognito_social_providers": [],
+  "aws_cognito_signup_attributes": [
+    "EMAIL"
+  ],
+  "aws_cognito_mfa_configuration": "OFF",
+  "aws_cognito_mfa_types": [
+    "SMS"
+  ],
+  "aws_cognito_password_protection_settings": {
+    "passwordPolicyMinLength": 8,
+    "passwordPolicyCharacters": []
+  },
+  "aws_cognito_verification_mechanisms": [
+    "EMAIL"
+  ],
+  "aws_cloud_logic_custom": [
+    {
+      "name": "apiddfc4c6e",
+      "endpoint": "https://p4lyce1yr4.execute-api.ap-northeast-1.amazonaws.com/dev",
+      "region": "ap-northeast-1"
+    },
+    {
+      "name": "amplifysamplepython",
+      "endpoint": "https://qgb06vu06i.execute-api.ap-northeast-1.amazonaws.com/dev",
+      "region": "ap-northeast-1"
+    },
+    {
+      "name": "amplifysamplepythonv2",
+      "endpoint": "https://0fv9oxm463.execute-api.ap-northeast-1.amazonaws.com/dev",
+      "region": "ap-northeast-1"
+    }
+  ],
+  "aws_user_files_s3_bucket": "amplifycloned5000-dev",
+  "aws_user_files_s3_bucket_region": "ap-northeast-1"
+}
